@@ -1,0 +1,720 @@
+{%- comment -%}
+Prototype note: the bundle cards are tuned to match the fixed three-tier merchandising in the HTML mockup, but the products, price, copy, and imagery remain schema-editable. The prototype's div-based card wrapper was normalized to semantic articles and lists.
+{%- endcomment -%}
+
+{%- liquid
+	assign section_heading = section.settings.heading | default: 'One box. Every room.'
+	assign section_kicker = section.settings.kicker | default: 'Build your bundle'
+	assign section_lede = section.settings.lede
+	assign empty_state = section.settings.empty_state
+	assign rendered_bundles = 0
+-%}
+
+<section class="bundles section" id="bundles-{{ section.id }}" aria-labelledby="bundles-heading-{{ section.id }}">
+	<style>
+		#shopify-section-{{ section.id }} {
+			--bundles-max-width: var(--page-width, 120rem);
+			--bundles-pad-x: 18px;
+			--bundles-gap: 14px;
+			--bundles-card-padding: 24px 22px;
+			--bundles-card-radius: 26px;
+			--bundles-tile-gap: 6px;
+			--bundles-tile-height: 82px;
+			--bundles-tile-height-sm: 72px;
+			--bundles-ink: #faf7fd;
+			--bundles-paper: rgba(236, 230, 247, .74);
+			--bundles-paper-dim: rgba(236, 230, 247, .52);
+			--bundles-accent: #f0a03c;
+			--bundles-accent-deep: #c9761d;
+			--bundles-border: rgba(236, 230, 247, .14);
+			--bundles-glass: linear-gradient(160deg, rgba(236, 230, 247, .12), rgba(75, 58, 143, .20));
+			--bundles-surface: linear-gradient(162deg, rgba(236, 230, 247, .13), rgba(75, 58, 143, .10));
+			--bundles-shadow: 0 26px 74px rgba(18, 12, 34, .44);
+			--bundles-shadow-best: 0 26px 74px rgba(18, 12, 34, .44), 0 0 0 1px rgba(240, 160, 60, .2), inset 0 1px 0 rgba(255, 255, 255, .24);
+			--bundles-pill-bg: rgba(23, 16, 43, .6);
+			--bundles-pill-border: rgba(240, 160, 60, .32);
+			--bundles-btn-primary-bg: linear-gradient(135deg, #00706a, #004b46);
+			--bundles-btn-primary-color: #f4fdf6;
+			--bundles-btn-ghost-bg: rgba(236, 230, 247, .10);
+			--bundles-btn-ghost-border: rgba(236, 230, 247, .30);
+		}
+
+		#shopify-section-{{ section.id }} .bundles {
+			position: relative;
+			z-index: 2;
+			padding: 34px 0;
+		}
+
+		#shopify-section-{{ section.id }} .bundles__wrap {
+			max-width: var(--bundles-max-width);
+			margin: 0 auto;
+			padding: 0 var(--bundles-pad-x);
+		}
+
+		#shopify-section-{{ section.id }} .bundles__head {
+			margin-bottom: 26px;
+			text-align: center;
+		}
+
+		#shopify-section-{{ section.id }} .bundles__kicker {
+			display: block;
+			font-size: 11px;
+			font-weight: 700;
+			letter-spacing: .22em;
+			text-transform: uppercase;
+			color: rgba(236, 230, 247, .52);
+		}
+
+		#shopify-section-{{ section.id }} .bundles__heading {
+			margin: 12px 0 0;
+			font-family: var(--font-heading-family, 'Outfit', system-ui, sans-serif);
+			font-size: clamp(30px, 4.6vw, 54px);
+			line-height: .94;
+			letter-spacing: -.018em;
+			text-transform: uppercase;
+			color: var(--bundles-ink);
+		}
+
+		#shopify-section-{{ section.id }} .bundles__rule {
+			display: flex;
+			align-items: center;
+			gap: 13px;
+			margin: 14px auto 0;
+			max-width: 270px;
+			justify-content: center;
+		}
+
+		#shopify-section-{{ section.id }} .bundles__rule i {
+			height: 1px;
+			flex: 1;
+			background: linear-gradient(90deg, rgba(236, 230, 247, .44), transparent);
+		}
+
+		#shopify-section-{{ section.id }} .bundles__rule svg {
+			width: 16px;
+			height: 16px;
+			color: var(--bundles-accent);
+			flex: 0 0 auto;
+		}
+
+		#shopify-section-{{ section.id }} .bundles__lede {
+			margin: 14px auto 0;
+			max-width: 56rem;
+			color: var(--bundles-paper);
+			font-size: 15px;
+			line-height: 1.62;
+		}
+
+		#shopify-section-{{ section.id }} .bundles__tiers {
+			display: grid;
+			gap: var(--bundles-gap);
+			grid-template-columns: 1fr;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card,
+		#shopify-section-{{ section.id }} .bundles__empty {
+			padding: var(--bundles-card-padding);
+			transition: transform .4s cubic-bezier(.2, .7, .2, 1);
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card {
+			display: flex;
+			flex-direction: column;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card:hover {
+			transform: translateY(-5px);
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card.is-featured {
+			border-color: rgba(240, 160, 60, .44);
+			box-shadow: var(--bundles-shadow-best);
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__tag {
+			display: inline-block;
+			font-size: 9.5px;
+			font-weight: 800;
+			letter-spacing: .16em;
+			text-transform: uppercase;
+			padding: 5px 11px;
+			border-radius: 999px;
+			margin-bottom: 14px;
+			background: rgba(240, 160, 60, .18);
+			border: 1px solid rgba(240, 160, 60, .34);
+			color: var(--bundles-accent);
+			width: fit-content;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__qty {
+			font-family: var(--font-heading-family, 'Outfit', system-ui, sans-serif);
+			font-weight: 800;
+			font-size: 52px;
+			line-height: .9;
+			color: var(--bundles-ink);
+			letter-spacing: -.03em;
+			margin-bottom: 4px;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__qty small {
+			font-size: 14px;
+			font-weight: 600;
+			letter-spacing: .1em;
+			text-transform: uppercase;
+			color: var(--bundles-paper-dim);
+			display: block;
+			margin-top: 6px;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__tray {
+			padding: 14px 14px 13px;
+			position: relative;
+			border-bottom: 1px solid rgba(236, 230, 247, .13);
+			background: var(--bundles-surface);
+			border-top-left-radius: calc(var(--bundles-card-radius) - 1px);
+			border-top-right-radius: calc(var(--bundles-card-radius) - 1px);
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__stack {
+			display: flex;
+			align-items: flex-end;
+			gap: var(--bundles-tile-gap);
+			flex-wrap: nowrap;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__item {
+			flex: 1 1 0;
+			min-width: 0;
+			text-align: center;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__media-wrap {
+			display: grid;
+			place-items: center;
+			margin: 0 auto 8px;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__media {
+			display: block;
+			width: auto;
+			height: var(--bundles-tile-height);
+			object-fit: contain;
+			filter: drop-shadow(0 8px 13px rgba(1, 24, 22, .5));
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__placeholder,
+		#shopify-section-{{ section.id }} .bundle-card__tile {
+			width: 44px;
+			height: var(--bundles-tile-height);
+			margin: 0 auto 8px;
+			display: grid;
+			place-items: center;
+			border-radius: 9px;
+			background: rgba(236, 230, 247, .08);
+			border: 1px dashed rgba(236, 230, 247, .26);
+			color: var(--bundles-accent);
+			overflow: hidden;
+			flex: 0 0 auto;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__placeholder svg,
+		#shopify-section-{{ section.id }} .bundle-card__tile svg {
+			width: 17px;
+			height: 17px;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__body {
+			padding: 15px 16px 18px;
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__title {
+			margin: 0;
+			font-family: var(--font-heading-family, 'Outfit', system-ui, sans-serif);
+			font-size: 16px;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: -.005em;
+			line-height: 1.1;
+			color: var(--bundles-ink);
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__count {
+			font-size: 10.5px;
+			font-weight: 700;
+			letter-spacing: .12em;
+			text-transform: uppercase;
+			color: var(--bundles-paper-dim);
+			margin-top: 6px;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__description {
+			font-size: 12.4px;
+			color: var(--bundles-paper);
+			line-height: 1.55;
+			margin: 11px 0 14px;
+			flex: 1;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__price-row {
+			display: flex;
+			align-items: baseline;
+			gap: 9px;
+			flex-wrap: wrap;
+			margin-bottom: 6px;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__price-row strong {
+			font-family: var(--font-heading-family, 'Outfit', system-ui, sans-serif);
+			font-size: 27px;
+			font-weight: 800;
+			color: var(--bundles-ink);
+			letter-spacing: -.02em;
+			line-height: 1;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__price-row s {
+			font-size: 13px;
+			color: var(--bundles-paper-dim);
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__price-row em {
+			font-style: normal;
+			font-size: 9.5px;
+			font-weight: 800;
+			letter-spacing: .1em;
+			text-transform: uppercase;
+			padding: 4px 9px;
+			border-radius: 999px;
+			background: rgba(240, 160, 60, .18);
+			border: 1px solid rgba(240, 160, 60, .36);
+			color: var(--bundles-accent);
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__save {
+			font-size: 10.4px;
+			color: var(--bundles-paper-dim);
+			margin-bottom: 12px;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__bullets {
+			list-style: none;
+			margin: 16px 0 20px;
+			display: grid;
+			gap: 8px;
+			padding: 0;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__bullets li {
+			display: flex;
+			gap: 9px;
+			font-size: 13px;
+			color: var(--bundles-paper);
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__bullets svg {
+			width: 14px;
+			height: 14px;
+			color: var(--bundles-accent);
+			flex: 0 0 auto;
+			margin-top: 4px;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card__fine {
+			font-size: 11px;
+			color: var(--bundles-paper-dim);
+			margin-bottom: 14px;
+		}
+
+		#shopify-section-{{ section.id }} .bundle-card .btn {
+			width: 100%;
+			justify-content: center;
+		}
+
+		#shopify-section-{{ section.id }} .btn {
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+			height: 46px;
+			padding: 0 22px;
+			border-radius: 999px;
+			font-size: 12.5px;
+			font-weight: 700;
+			letter-spacing: .13em;
+			text-transform: uppercase;
+			transition: .35s cubic-bezier(.2, .7, .2, 1);
+			white-space: nowrap;
+			text-decoration: none;
+			border: 0;
+		}
+
+		#shopify-section-{{ section.id }} .btn svg {
+			width: 15px;
+			height: 15px;
+			flex: 0 0 auto;
+		}
+
+		#shopify-section-{{ section.id }} .btn-primary {
+			background: var(--bundles-btn-primary-bg);
+			color: var(--bundles-btn-primary-color);
+			box-shadow: 0 12px 30px rgba(0, 80, 74, .26), inset 0 1px 0 rgba(255, 255, 255, .22);
+		}
+
+		#shopify-section-{{ section.id }} .btn-ghost {
+			background: var(--bundles-btn-ghost-bg);
+			border: 1px solid var(--bundles-btn-ghost-border);
+			color: var(--bundles-ink);
+			backdrop-filter: blur(12px);
+			-webkit-backdrop-filter: blur(12px);
+		}
+
+		#shopify-section-{{ section.id }} .btn:hover {
+			transform: translateY(-2px);
+		}
+
+		#shopify-section-{{ section.id }} .bundles__empty {
+			padding: 24px;
+			border-radius: 26px;
+			background: linear-gradient(160deg, rgba(236, 230, 247, .12), rgba(75, 58, 143, .2));
+			border: 1px solid rgba(236, 230, 247, .14);
+		}
+
+		#shopify-section-{{ section.id }} .bundles__empty h3 {
+			margin: 0 0 8px;
+			font-family: var(--font-heading-family, 'Outfit', system-ui, sans-serif);
+			font-size: 22px;
+			text-transform: uppercase;
+			letter-spacing: -.01em;
+			color: var(--bundles-ink);
+		}
+
+		#shopify-section-{{ section.id }} .bundles__empty p {
+			margin: 0;
+			color: var(--bundles-paper);
+		}
+
+		@media (min-width: 760px) {
+			#shopify-section-{{ section.id }} .bundles__tiers {
+				grid-template-columns: repeat(3, 1fr);
+			}
+		}
+
+		@media (max-width: 760px) {
+			#shopify-section-{{ section.id }} .bundles {
+				padding: 22px 0;
+			}
+
+			#shopify-section-{{ section.id }} .bundle-card__qty {
+				font-size: 44px;
+			}
+
+			#shopify-section-{{ section.id }} .bundle-card__media,
+			#shopify-section-{{ section.id }} .bundle-card__placeholder,
+			#shopify-section-{{ section.id }} .bundle-card__tile {
+				height: var(--bundles-tile-height-sm);
+			}
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			#shopify-section-{{ section.id }} .bundles *,
+			#shopify-section-{{ section.id }} .bundles *::before,
+			#shopify-section-{{ section.id }} .bundles *::after {
+				animation-duration: .01ms !important;
+				animation-iteration-count: 1 !important;
+				transition-duration: .01ms !important;
+				scroll-behavior: auto !important;
+			}
+
+			#shopify-section-{{ section.id }} .bundle-card,
+			#shopify-section-{{ section.id }} .btn {
+				transition: none !important;
+			}
+		}
+	</style>
+
+	<div class="bundles__wrap">
+		<div class="bundles__head">
+			<span class="bundles__kicker">{{ section_kicker | escape }}</span>
+			<h2 class="bundles__heading" id="bundles-heading-{{ section.id }}">{{ section_heading | escape }}</h2>
+			<div class="bundles__rule" aria-hidden="true">
+				<i></i>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></svg>
+				<i></i>
+			</div>
+			{%- if section_lede != blank -%}
+				<div class="bundles__lede rte">{{ section_lede }}</div>
+			{%- endif -%}
+		</div>
+
+		<div class="bundles__tiers">
+			{%- for block in section.blocks -%}
+				{%- if block.type == 'bundle' -%}
+					{%- liquid
+						assign bundle_products = block.settings.products
+						assign bundle_title = block.settings.title | default: 'Bundle'
+						assign bundle_tag = block.settings.tag | default: 'Bundle'
+						assign bundle_description = block.settings.description
+						assign bundle_cta_label = block.settings.cta_label | default: 'Build this box'
+						assign bundle_cta_link = block.settings.cta_link | default: '#shop'
+						assign bundle_price_cents = block.settings.bundle_price_cents | default: 0
+						assign bundle_product_count = bundle_products.size | default: 0
+						assign bundle_retail_cents = 0
+
+						for product in bundle_products limit: 5
+							assign variant = product.selected_or_first_available_variant
+							assign retail_price = variant.price | default: 0
+							assign bundle_retail_cents = bundle_retail_cents | plus: retail_price
+						endfor
+
+						assign bundle_savings_cents = bundle_retail_cents | minus: bundle_price_cents
+						if bundle_savings_cents < 0
+							assign bundle_savings_cents = 0
+						endif
+
+						assign bundle_flat_cents = 0
+						if bundle_product_count > 0
+							assign bundle_flat_cents = bundle_price_cents | divided_by: bundle_product_count
+						endif
+
+						assign bundle_count_label = 'Products'
+						if bundle_product_count == 1
+							assign bundle_count_label = 'Product'
+						endif
+
+						assign bullet_1 = block.settings.bullet_1
+						assign bullet_2 = block.settings.bullet_2
+						assign bullet_3 = block.settings.bullet_3
+						assign featured_bundle = block.settings.featured_bundle
+					-%}
+
+					<article class="glass bundle-card{% if featured_bundle %} is-featured{% endif %}" {{ block.shopify_attributes }}>
+						<div class="bundle-card__tray">
+							<span class="bundle-card__tag">{{ bundle_tag | escape }}</span>
+							<div class="bundle-card__stack" aria-label="{{ bundle_title | escape }} products">
+								{%- if bundle_products != blank -%}
+									{%- for product in bundle_products limit: 5 -%}
+										<span class="bundle-card__item">
+											{%- render 'card-product',
+												product: product,
+												compact: true,
+												compact_wrapper_class: 'bundle-card__media-wrap',
+												compact_media_class: 'bundle-card__media',
+												compact_placeholder_class: 'bundle-card__tile',
+												compact_alt: product.title,
+												loading: 'lazy'
+											-%}
+										</span>
+									{%- endfor -%}
+								{%- else -%}
+									<span class="bundle-card__item">
+										<span class="bundle-card__placeholder" role="img" aria-label="No bundle products selected">
+											<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></svg>
+										</span>
+									</span>
+								{%- endif -%}
+							</div>
+						</div>
+
+						<div class="bundle-card__body">
+							<h3 class="bundle-card__title">{{ bundle_title | escape }}</h3>
+							  <div class="bundle-card__count">{{ bundle_product_count }}<small>{{ bundle_count_label }}</small></div>
+							<div class="bundle-card__description rte">{{ bundle_description }}</div>
+							<div class="bundle-card__price-row">
+								<strong>{{ bundle_price_cents | money }}</strong>
+								<s>{{ bundle_retail_cents | money }}</s>
+								{%- if bundle_savings_cents > 0 -%}
+									<em>Save {{ bundle_savings_cents | money }}</em>
+								{%- endif -%}
+							</div>
+							{%- if bundle_product_count > 0 -%}
+								<div class="bundle-card__save">Flat {{ bundle_flat_cents | money }} per product</div>
+							{%- endif -%}
+							<ul class="bundle-card__bullets">
+								{%- if bullet_1 != blank -%}
+									<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>{{ bullet_1 }}</li>
+								{%- endif -%}
+								{%- if bullet_2 != blank -%}
+									<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>{{ bullet_2 }}</li>
+								{%- endif -%}
+								{%- if bullet_3 != blank -%}
+									<li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg>{{ bullet_3 }}</li>
+								{%- endif -%}
+							</ul>
+							<a class="btn{% if featured_bundle %} btn-primary{% else %} btn-ghost{% endif %}" href="{{ bundle_cta_link }}">
+								<span>{{ bundle_cta_label | escape }}</span>
+								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13m-5-6 6 6-6 6"/></svg>
+							</a>
+						</div>
+					</article>
+
+					{%- assign rendered_bundles = rendered_bundles | plus: 1 -%}
+				{%- endif -%}
+			{%- endfor -%}
+
+			{%- if rendered_bundles == 0 -%}
+				<div class="glass bundles__empty">
+					<h3>Add bundle cards</h3>
+					<p>{{ empty_state | default: 'Add bundle blocks in the editor to render the prototype tiers.' }}</p>
+				</div>
+			{%- endif -%}
+		</div>
+	</div>
+</section>
+
+{% schema %}
+{
+	"name": "Bundles",
+	"tag": "section",
+	"class": "section",
+	"settings": [
+		{
+			"type": "text",
+			"id": "kicker",
+			"label": "Kicker",
+			"default": "Build your bundle"
+		},
+		{
+			"type": "text",
+			"id": "heading",
+			"label": "Heading",
+			"default": "One box. Every room."
+		},
+		{
+			"type": "richtext",
+			"id": "lede",
+			"label": "Lede",
+			"default": "<p>Mix and match across kitchen, laundry, home and skin. One flat price, no code needed, free shipping either way.</p>"
+		},
+		{
+			"type": "richtext",
+			"id": "empty_state",
+			"label": "Empty state text",
+			"default": "<p>Add bundle blocks in the editor to render the prototype tiers.</p>"
+		}
+	],
+	"blocks": [
+		{
+			"type": "bundle",
+			"name": "Bundle card",
+			"settings": [
+				{
+					"type": "checkbox",
+					"id": "featured_bundle",
+					"label": "Featured bundle",
+					"default": false
+				},
+				{
+					"type": "text",
+					"id": "tag",
+					"label": "Tag",
+					"default": "Starter"
+				},
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Title",
+					"default": "Starter"
+				},
+				{
+					"type": "richtext",
+					"id": "description",
+					"label": "Description",
+					"default": "<p>Pick any two products and build a small box that handles the everyday messes.</p>"
+				},
+				{
+					"type": "product_list",
+					"id": "products",
+					"label": "Products",
+					"limit": 5
+				},
+				{
+					"type": "range",
+					"id": "bundle_price_cents",
+					"label": "Bundle price (cents)",
+					"min": 1000,
+					"max": 250000,
+					"step": 100,
+					"default": 34900
+				},
+				{
+					"type": "text",
+					"id": "bullet_1",
+					"label": "Bullet 1",
+					"default": "Pick any two products"
+				},
+				{
+					"type": "text",
+					"id": "bullet_2",
+					"label": "Bullet 2",
+					"default": "Free shipping across India"
+				},
+				{
+					"type": "text",
+					"id": "bullet_3",
+					"label": "Bullet 3",
+					"default": ""
+				},
+				{
+					"type": "text",
+					"id": "cta_label",
+					"label": "CTA label",
+					"default": "Build this box"
+				},
+				{
+					"type": "url",
+					"id": "cta_link",
+					"label": "CTA link"
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "Bundles",
+			"blocks": [
+				{
+					"type": "bundle",
+					"settings": {
+						"tag": "Starter",
+						"title": "Starter",
+						"description": "<p>Pick any two products and build a small box that handles the everyday messes.</p>",
+						"bundle_price_cents": 34900,
+						"bullet_1": "Pick any two products",
+						"bullet_2": "Free shipping across India",
+						"cta_label": "Build this box"
+					}
+				},
+				{
+					"type": "bundle",
+					"settings": {
+						"featured_bundle": true,
+						"tag": "Most popular",
+						"title": "Most popular",
+						"description": "<p>Pick any three products and cover kitchen and laundry in one order.</p>",
+						"bundle_price_cents": 49900,
+						"bullet_1": "Pick any three products",
+						"bullet_2": "Covers kitchen and laundry",
+						"bullet_3": "Free shipping across India",
+						"cta_label": "Build this box"
+					}
+				},
+				{
+					"type": "bundle",
+					"settings": {
+						"tag": "Whole home",
+						"title": "Whole home",
+						"description": "<p>Pick any five products for a full-house restock with one flat price.</p>",
+						"bundle_price_cents": 79900,
+						"bullet_1": "Pick any five products",
+						"bullet_2": "Every room in one order",
+						"bullet_3": "Free shipping across India",
+						"cta_label": "Build this box"
+					}
+				}
+			]
+		}
+	]
+}
+{% endschema %}

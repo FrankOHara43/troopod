@@ -235,11 +235,70 @@
       },
       "blocks": {},
       "block_order": []
+    },
+    "bundles": {
+      "type": "bundles",
+      "settings": {
+        "kicker": "Build your bundle",
+        "heading": "One box. Every room.",
+        "lede": "<p>Mix and match across kitchen, laundry, home and skin. One flat price, no code needed, free shipping either way.</p>",
+        "empty_state": "<p>Add bundle blocks in the editor to render the prototype tiers.</p>"
+      },
+      "blocks": {
+        "bundle-1": {
+          "type": "bundle",
+          "settings": {
+            "tag": "Starter",
+            "title": "Starter",
+            "description": "<p>Pick any two products and build a small box that handles the everyday messes.</p>",
+            "bundle_price_cents": 34900,
+            "bullet_1": "Pick any two products",
+            "bullet_2": "Free shipping across India",
+            "cta_label": "Build this box",
+            "cta_link": "#shop"
+          }
+        },
+        "bundle-2": {
+          "type": "bundle",
+          "settings": {
+            "featured_bundle": true,
+            "tag": "Most popular",
+            "title": "Most popular",
+            "description": "<p>Pick any three products and cover kitchen and laundry in one order.</p>",
+            "bundle_price_cents": 49900,
+            "bullet_1": "Pick any three products",
+            "bullet_2": "Covers kitchen and laundry",
+            "bullet_3": "Free shipping across India",
+            "cta_label": "Build this box",
+            "cta_link": "#shop"
+          }
+        },
+        "bundle-3": {
+          "type": "bundle",
+          "settings": {
+            "tag": "Whole home",
+            "title": "Whole home",
+            "description": "<p>Pick any five products for a full-house restock with one flat price.</p>",
+            "bundle_price_cents": 79900,
+            "bullet_1": "Pick any five products",
+            "bullet_2": "Every room in one order",
+            "bullet_3": "Free shipping across India",
+            "cta_label": "Build this box",
+            "cta_link": "#shop"
+          }
+        }
+      },
+      "block_order": [
+        "bundle-1",
+        "bundle-2",
+        "bundle-3"
+      ]
     }
   },
   "order": [
     "hero",
     "best-combos",
-    "shop-grid"
+    "shop-grid",
+    "bundles"
   ]
 }
