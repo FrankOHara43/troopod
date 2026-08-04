@@ -2,19 +2,24 @@
 
 ## combo
 
-Use this metaobject for the best-selling combos rail.
+Use this metaobject for the Best selling combos rail.
 
-Fields:
-- `title` - Single line text
-- `description` - Rich text
-- `products` - Product list
-- `image` - File/image
-- `badge_text` - Single line text
+| Field key | Admin field type | Required | Purpose |
+| --- | --- | --- | --- |
+| `title` | Single line text | Yes | Combo name |
+| `description` | Rich text | No | Card description |
+| `products` | List of products | No | Products shown in the compact product stack |
+| `image` | File/image | No | Fallback image when no products are selected |
+| `badge_text` | Single line text | No | Merchandising badge |
 
-Notes:
-- `title`, `description`, `products`, `image`, and `badge_text` are the source of truth for combo content.
-- The section still includes fallback block settings so it can render safely before the metaobject entries are connected.
-- Per-combo pricing, save labels, CTA text, and stack captions are section block fields because the prototype treats them as layout-specific merchandising, not product catalog data.
+### Admin setup
+
+1. In Shopify admin, open **Content → Metaobjects → Add definition** and name it `Combo` (type `combo`).
+2. Add the fields above with the exact keys and save.
+3. Create combo entries in **Content → Metaobjects → Combo**.
+4. In **Online Store → Themes → Customize**, open Best selling combos. Add a Combo card block, select its combo entry, then set its layout-specific price, savings, CTA, flag, and stack captions. Those are section-block fields because the prototype treats them as merchandising presentation rather than reusable catalog content.
+
+The section retains fallback block fields so it remains usable before any entries are connected.
 
 ## review
 
@@ -27,4 +32,9 @@ Fields:
 - `photo` - File/image (optional)
 - `product` - Product reference (optional)
 
-In Shopify admin, go to **Content → Metaobjects → Add definition**, name it `Review`, add the fields above using the shown keys, then create entries. In the Reviews rail section, select the entries in **Reviews** and set **Maximum reviews** to control how many appear. The rail safely shows its editor empty state until at least one entry is selected.
+### Admin setup
+
+1. In Shopify admin, open **Content → Metaobjects → Add definition** and name it `Review` (type `review`).
+2. Add the fields above with the exact keys and save. For `rating`, constrain values to 1–5 in the definition when available.
+3. Create entries in **Content → Metaobjects → Review**.
+4. In the Reviews rail section, select entries in **Reviews** and set **Maximum reviews**. The rail safely shows its editor empty state until at least one entry is selected.
