@@ -59,6 +59,132 @@
           "type": "slide",
           "settings": {
             "layout": "double",
+    "best-combos": {
+      "type": "best-combos",
+      "settings": {
+        "kicker": "Pre-built to save you money",
+        "heading": "Best selling combos",
+        "subheading": "<p>Swipe through the boxes people order most. Each one is already priced below buying the same products on their own.</p>",
+        "rail_label": "Best selling combos",
+        "combo_limit": 5,
+        "empty_state": "<p>Add combo metaobjects or fallback combo blocks in the editor to render the rail.</p>"
+      },
+      "blocks": {
+        "combo-1": {
+          "type": "combo",
+          "settings": {
+            "hero_combo": true,
+            "save_text": "You save ₹398",
+            "flag_text": "Most popular",
+            "title": "Kitchen essentials",
+            "description": "<p>Includes: Foaming Kitchen Cleaner, Dishwash Gel &amp; Tap Cleaner. Everything for a sparkling kitchen, no need to pick separately.</p>",
+            "badge_text": "Most popular",
+            "count_label": "3 products",
+            "current_price": "₹499",
+            "compare_price": "₹897",
+            "fine_print": "Inclusive of all taxes · COD available",
+            "cta_label": "Shop bundle",
+            "cta_link": "#bundles",
+            "stack_label_1": "Cuts grease instantly",
+            "stack_label_2": "Squeaky clean dishes",
+            "stack_label_3": "Melts hard water stains",
+            "stack_art_1": "p-kitchen",
+            "stack_art_2": "p-dish",
+            "stack_art_3": "p-tap"
+          }
+        },
+        "combo-2": {
+          "type": "combo",
+          "settings": {
+            "save_text": "You save ₹448",
+            "title": "Laundry care bundle",
+            "description": "<p>Includes: Laundry Detergent, Fabric Conditioner &amp; Machine Cleaner Powder. Softer, fresher wash, all in one box.</p>",
+            "count_label": "3 products",
+            "current_price": "₹499",
+            "compare_price": "₹947",
+            "fine_print": "Inclusive of all taxes · COD available",
+            "cta_label": "Shop bundle",
+            "cta_link": "#bundles",
+            "stack_label_1": "Removes tough stains &amp; odour",
+            "stack_label_2": "Softens &amp; freshens every wash",
+            "stack_label_3": "Deep-cleans your machine",
+            "stack_art_1": "p-laundry",
+            "stack_art_2": "none",
+            "stack_art_3": "p-wm"
+          }
+        },
+        "combo-3": {
+          "type": "combo",
+          "settings": {
+            "save_text": "Biggest saving",
+            "flag_text": "Best value",
+            "hero_combo": true,
+            "title": "Complete home bundle",
+            "description": "<p>Includes: Kitchen Cleaner, Laundry Detergent, Floor Cleaner, Toilet Cleaner &amp; Handwash. Our biggest saving box.</p>",
+            "badge_text": "Best value",
+            "count_label": "5 products",
+            "current_price": "₹799",
+            "compare_price": "₹1,495",
+            "fine_print": "Inclusive of all taxes · COD available",
+            "cta_label": "Shop bundle",
+            "cta_link": "#bundles",
+            "stack_label_1": "Cuts grease instantly",
+            "stack_label_2": "Kills 99.9% germs",
+            "stack_label_3": "Gentle hydration for hands",
+            "stack_art_1": "p-kitchen",
+            "stack_art_2": "p-laundry",
+            "stack_art_3": "p-floor",
+            "stack_art_4": "p-toilet",
+            "stack_art_5": "p-handwash"
+          }
+        },
+        "combo-4": {
+          "type": "combo",
+          "settings": {
+            "save_text": "You save ₹398",
+            "title": "Bathroom deep clean",
+            "description": "<p>Includes: Toilet Cleaner, Tap Cleaner &amp; Magic Eraser. A complete bathroom refresh in one box.</p>",
+            "count_label": "3 products",
+            "current_price": "₹499",
+            "compare_price": "₹897",
+            "fine_print": "Inclusive of all taxes · COD available",
+            "cta_label": "Shop bundle",
+            "cta_link": "#bundles",
+            "stack_label_1": "Kills 99.9% germs",
+            "stack_label_2": "Melts hard water stains",
+            "stack_label_3": "Scrubs away soap scum",
+            "stack_art_1": "p-toilet",
+            "stack_art_2": "p-tap",
+            "stack_art_3": "p-eraser"
+          }
+        },
+        "combo-5": {
+          "type": "combo",
+          "settings": {
+            "save_text": "You save ₹249",
+            "title": "Hard water solution kit",
+            "description": "<p>Includes: Tap Cleaner &amp; Toilet Cleaner. A quick, focused fix for hard water stains across the home.</p>",
+            "count_label": "2 products",
+            "current_price": "₹349",
+            "compare_price": "₹598",
+            "fine_print": "Inclusive of all taxes · COD available",
+            "cta_label": "Shop bundle",
+            "cta_link": "#bundles",
+            "stack_label_1": "Melts hard water stains",
+            "stack_label_2": "Fights limescale in the bowl",
+            "stack_art_1": "p-tap",
+            "stack_art_2": "p-toilet"
+          }
+        }
+      },
+      "block_order": [
+        "combo-1",
+        "combo-2",
+        "combo-3",
+        "combo-4",
+        "combo-5"
+      ]
+    },
             "alt_1": "Purelane tap cleaner and limescale remover spray bottle",
             "alt_2": "Purelane foaming kitchen cleaner spray bottle",
             "label": "Any 2 products",
@@ -113,6 +239,7 @@
   },
   "order": [
     "hero",
+    "best-combos",
     "shop-grid"
   ]
 }

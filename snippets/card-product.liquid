@@ -3,6 +3,7 @@ Inference: the prototype never shows sold-out or no-image cards, so this reusabl
 {%- endcomment -%}
 
 {%- liquid
+	assign compact = compact | default: false
 	assign card_product = product
 	assign card_badge = badge | default: 'Best seller'
 	assign card_rating = rating | default: ''
@@ -22,7 +23,34 @@ Inference: the prototype never shows sold-out or no-image cards, so this reusabl
 	endif
 -%}
 
-<article class="glass card shop-grid-card shop-grid-card--{{ card_index | plus: 0 }}{% unless card_product.available %} is-sold-out{% endunless %}">
+{%- if compact -%}
+	{%- assign compact_wrapper_class = compact_wrapper_class | default: 'combo-stack__item' -%}
+	{%- assign compact_media_class = compact_media_class | default: 'combo-stack__media' -%}
+	{%- assign compact_placeholder_class = compact_placeholder_class | default: 'combo-stack__placeholder' -%}
+	{%- assign compact_fallback_art_class = compact_fallback_art_class | default: '' -%}
+	{%- assign compact_alt = compact_alt | default: card_product.title | default: card_placeholder_label -%}
+
+	<span class="{{ compact_wrapper_class }}">
+		{%- if card_product != blank and card_product.featured_image != blank -%}
+			{{ card_product.featured_image
+				| image_url: width: 360
+				| image_tag:
+					widths: '72, 108, 144, 180, 216, 288, 360',
+					sizes: '(min-width: 760px) 66px, 56px',
+					loading: card_loading,
+					class: compact_media_class,
+					alt: compact_alt | escape
+			}}
+		{%- elsif compact_fallback_art_class != blank -%}
+			<span class="{{ compact_fallback_art_class }}" aria-hidden="true"></span>
+		{%- else -%}
+			<span class="{{ compact_placeholder_class }}" role="img" aria-label="{{ compact_alt | escape }}">
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></svg>
+			</span>
+		{%- endif -%}
+	</span>
+{%- else -%}
+	<article class="glass card shop-grid-card shop-grid-card--{{ card_index | plus: 0 }}{% unless card_product.available %} is-sold-out{% endunless %}">
 	<div class="shop-grid-card__shot">
 		<span class="pill">{% if card_product.available %}{{ card_badge | escape }}{% else %}{{ card_sold_out_label | escape }}{% endif %}</span>
 
@@ -87,4 +115,5 @@ Inference: the prototype never shows sold-out or no-image cards, so this reusabl
 			{%- endif -%}
 		</button>
 	{%- endform -%}
-</article>
+	</article>
+{%- endif -%}
