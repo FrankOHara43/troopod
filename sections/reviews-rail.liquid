@@ -1,0 +1,105 @@
+{%- liquid
+	assign review_entries = section.settings.reviews
+	assign review_limit = section.settings.review_limit | default: 5
+	assign rendered_reviews = 0
+	assign heading = section.settings.heading | default: "That's what they said"
+	assign aggregate_rating = section.settings.aggregate_rating | default: '4.8'
+	assign aggregate_reviews = section.settings.aggregate_reviews | default: 'from 8,000+ reviews'
+	assign homes_label = section.settings.homes_label | default: 'Loved by 12 lakh+ homes'
+-%}
+
+<section class="reviews-rail section" id="reviews-{{ section.id }}" aria-labelledby="reviews-heading-{{ section.id }}">
+	<style>
+		#shopify-section-{{ section.id }} {
+			--reviews-ink: #faf7fd;
+			--reviews-paper: rgba(236, 230, 247, .74);
+			--reviews-paper-dim: rgba(236, 230, 247, .60);
+			--reviews-accent: #f0a03c;
+			--reviews-card-width: 286px;
+			--reviews-gap: 14px;
+		}
+
+		#shopify-section-{{ section.id }} .reviews-rail { overflow: hidden; padding: 34px 0; position: relative; z-index: 2; }
+		#shopify-section-{{ section.id }} .reviews-rail__wrap { max-width: var(--page-width, 120rem); margin: 0 auto; padding: 0 18px; }
+		#shopify-section-{{ section.id }} .reviews-rail__head { display: flex; align-items: center; justify-content: center; gap: 13px; flex-wrap: wrap; margin-bottom: 20px; text-align: center; }
+		#shopify-section-{{ section.id }} .reviews-rail__kicker { color: var(--reviews-paper-dim); font-size: 11px; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
+		#shopify-section-{{ section.id }} .reviews-rail__heading { margin: 0; font: inherit; }
+		#shopify-section-{{ section.id }} .reviews-rail__aggregate { color: var(--reviews-paper); font-size: 12px; white-space: nowrap; }
+		#shopify-section-{{ section.id }} .reviews-rail__aggregate strong { color: var(--reviews-ink); }
+		#shopify-section-{{ section.id }} .reviews-rail__stars { color: var(--reviews-accent); letter-spacing: .08em; }
+		#shopify-section-{{ section.id }} .reviews-rail__viewport { overflow: hidden; }
+		#shopify-section-{{ section.id }} .reviews-rail__track { display: flex; width: max-content; gap: var(--reviews-gap); padding: 4px 0 14px; animation: reviews-scroll-{{ section.id }} 45s linear infinite; }
+		#shopify-section-{{ section.id }} .reviews-rail__viewport:hover .reviews-rail__track,
+		#shopify-section-{{ section.id }} .reviews-rail__viewport:focus-within .reviews-rail__track { animation-play-state: paused; }
+		#shopify-section-{{ section.id }} .review-card { flex: 0 0 var(--reviews-card-width); min-height: 196px; box-sizing: border-box; padding: 20px; border: 1px solid rgba(236, 230, 247, .16); border-radius: 22px; background: linear-gradient(160deg, rgba(236, 230, 247, .12), rgba(75, 58, 143, .20)); box-shadow: 0 18px 48px rgba(18, 12, 34, .25); }
+		#shopify-section-{{ section.id }} .review-card__rating { color: var(--reviews-accent); font-size: 14px; letter-spacing: .11em; }
+		#shopify-section-{{ section.id }} .review-card__quote { margin: 13px 0 10px; color: var(--reviews-paper); font-size: 13px; line-height: 1.58; }
+		#shopify-section-{{ section.id }} .review-card__who { display: flex; align-items: center; gap: 8px; margin-top: 15px; color: var(--reviews-paper-dim); font-size: 11px; }
+		#shopify-section-{{ section.id }} .review-card__verified { display: grid; width: 16px; height: 16px; place-items: center; flex: 0 0 auto; color: #0a261e; background: var(--reviews-accent); border-radius: 50%; }
+		#shopify-section-{{ section.id }} .review-card__verified svg { width: 11px; height: 11px; }
+		#shopify-section-{{ section.id }} .review-card__photo { width: 24px; height: 24px; flex: 0 0 auto; object-fit: cover; border-radius: 50%; }
+		#shopify-section-{{ section.id }} .review-card__author { color: var(--reviews-ink); }
+		#shopify-section-{{ section.id }} .review-card__product::before { content: '· '; }
+		#shopify-section-{{ section.id }} .reviews-rail__empty { margin: 0 auto; max-width: 42rem; padding: 22px; text-align: center; color: var(--reviews-paper); border: 1px solid rgba(236, 230, 247, .16); border-radius: 22px; background: linear-gradient(160deg, rgba(236, 230, 247, .12), rgba(75, 58, 143, .20)); }
+		#shopify-section-{{ section.id }} .reviews-rail__empty p { margin: 0; }
+		@keyframes reviews-scroll-{{ section.id }} { to { transform: translateX(calc(-50% - (var(--reviews-gap) / 2))); } }
+		@media (max-width: 749px) { #shopify-section-{{ section.id }} .reviews-rail { padding: 22px 0; } #shopify-section-{{ section.id }} .reviews-rail__head { gap: 8px 12px; } #shopify-section-{{ section.id }} .review-card { flex-basis: 268px; } }
+		@media (prefers-reduced-motion: reduce) { #shopify-section-{{ section.id }} .reviews-rail__viewport { overflow-x: auto; scrollbar-width: thin; } #shopify-section-{{ section.id }} .reviews-rail__track { animation: none; width: max-content; } }
+	</style>
+
+	<div class="reviews-rail__wrap">
+		<header class="reviews-rail__head">
+			<h2 class="reviews-rail__heading" id="reviews-heading-{{ section.id }}"><span class="reviews-rail__kicker">{{ heading | escape }}</span></h2>
+			<span class="reviews-rail__aggregate"><span class="reviews-rail__stars" aria-label="{{ aggregate_rating | escape }} out of 5 stars">★★★★★</span> <strong>{{ aggregate_rating | escape }}</strong> {{ aggregate_reviews | escape }}</span>
+			<span class="reviews-rail__aggregate">{{ homes_label | escape }}</span>
+		</header>
+	</div>
+
+	{%- if review_entries != blank -%}
+		<div class="reviews-rail__viewport" aria-label="Customer reviews">
+			<div class="reviews-rail__track">
+				{%- for repeat in (1..2) -%}
+					{%- for review in review_entries limit: review_limit -%}
+						{%- liquid
+							assign review_quote = review.quote.value | default: 'Customer review'
+							assign review_author = review.author.value | default: 'Verified buyer'
+							assign review_rating = review.rating.value | default: 5
+							assign review_photo = review.photo.value
+							assign review_product = review.product.value
+						-%}
+						<article class="review-card"{% if repeat == 1 %} aria-label="Review by {{ review_author | escape }}"{% else %} aria-hidden="true"{% endif %}>
+							<div class="review-card__rating" aria-label="{{ review_rating | escape }} out of 5 stars">★★★★★</div>
+							<blockquote class="review-card__quote">{{ review_quote | escape }}</blockquote>
+							<div class="review-card__who">
+								{%- if review_photo != blank -%}{{ review_photo | image_url: width: 48 | image_tag: class: 'review-card__photo', widths: '24, 48', loading: 'lazy', alt: review_author }}{%- else -%}<span class="review-card__verified" aria-label="Verified buyer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 13 4 4L19 7"/></svg></span>{%- endif -%}
+								<strong class="review-card__author">{{ review_author | escape }}</strong>
+								{%- if review_product != blank -%}<span class="review-card__product">{{ review_product.title | escape }}</span>{%- endif -%}
+							</div>
+						</article>
+						{%- assign rendered_reviews = rendered_reviews | plus: 1 -%}
+					{%- endfor -%}
+				{%- endfor -%}
+			</div>
+		</div>
+	{%- else -%}
+		<div class="reviews-rail__wrap"><div class="reviews-rail__empty rte">{{ section.settings.empty_state | default: 'Select review entries to populate this rail.' }}</div></div>
+	{%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Reviews rail",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Kicker", "default": "That's what they said" },
+    { "type": "text", "id": "aggregate_rating", "label": "Aggregate rating", "default": "4.8" },
+    { "type": "text", "id": "aggregate_reviews", "label": "Aggregate reviews text", "default": "from 8,000+ reviews" },
+    { "type": "text", "id": "homes_label", "label": "Homes label", "default": "Loved by 12 lakh+ homes" },
+    { "type": "metaobject_list", "id": "reviews", "label": "Reviews", "metaobject_type": "review", "limit": 16 },
+    { "type": "range", "id": "review_limit", "label": "Maximum reviews", "min": 1, "max": 16, "step": 1, "default": 5 },
+    { "type": "richtext", "id": "empty_state", "label": "Empty state", "default": "<p>Select review entries to populate this rail.</p>" }
+  ],
+  "presets": [{ "name": "Reviews rail" }]
+}
+{% endschema %}

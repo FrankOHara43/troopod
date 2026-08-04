@@ -293,12 +293,24 @@
         "bundle-2",
         "bundle-3"
       ]
+    },
+    "reviews": {
+      "type": "reviews-rail",
+      "settings": {
+        "heading": "That's what they said",
+        "aggregate_rating": "4.8",
+        "aggregate_reviews": "from 8,000+ reviews",
+        "homes_label": "Loved by 12 lakh+ homes",
+        "review_limit": 5,
+        "empty_state": "<p>Select review entries to populate this rail.</p>"
+      }
     }
   },
   "order": [
     "hero",
     "best-combos",
     "shop-grid",
-    "bundles"
+    "bundles",
+    "reviews"
   ]
 }
