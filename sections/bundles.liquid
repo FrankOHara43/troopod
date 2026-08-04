@@ -440,7 +440,7 @@ Prototype note: the bundle cards are tuned to match the fixed three-tier merchan
 			<h2 class="bundles__heading" id="bundles-heading-{{ section.id }}">{{ section_heading | escape }}</h2>
 			<div class="bundles__rule" aria-hidden="true">
 				<i></i>
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></svg>
+				{% render 'icon-leaf' %}
 				<i></i>
 			</div>
 			{%- if section_lede != blank -%}
@@ -544,7 +544,7 @@ Prototype note: the bundle cards are tuned to match the fixed three-tier merchan
 							</ul>
 							<a class="btn{% if featured_bundle %} btn-primary{% else %} btn-ghost{% endif %}" href="{{ bundle_cta_link }}">
 								<span>{{ bundle_cta_label | escape }}</span>
-								<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13m-5-6 6 6-6 6"/></svg>
+								{% render 'icon-arrow-right' %}
 							</a>
 						</div>
 					</article>

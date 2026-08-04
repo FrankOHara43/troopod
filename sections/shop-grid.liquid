@@ -332,7 +332,7 @@ Prototype note: the shop grid is a curated, fixed card wall in the prototype, so
 			<h2 class="shop-grid__heading">{{ section_heading | escape }}</h2>
 			<div class="shop-grid__rule" aria-hidden="true">
 				<i></i>
-				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></svg>
+				{% render 'icon-leaf' %}
 				<i></i>
 			</div>
 			{%- if section_subheading != blank -%}
