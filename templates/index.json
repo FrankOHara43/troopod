@@ -1,0 +1,99 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "heading_line_1": "Clean",
+        "heading_line_2": "That",
+        "heading_accent": "Lasts",
+        "lede": "Homecare that works on the toughest grime, made from plants. Kind to your home, your family and the world outside it.",
+        "primary_button_label": "Shop now",
+        "primary_button_link": "#shop",
+        "secondary_button_label": "How it works",
+        "secondary_button_link": "#how",
+        "promise_rail_label": "Product promises",
+        "mobile_strip_label": "Product promises",
+        "stage_label": "Hero product rotator"
+      },
+      "blocks": {
+        "promise-1": {
+          "type": "promise",
+          "settings": {
+            "icon": "leaf",
+            "desktop_line_1": "Plant",
+            "desktop_line_2": "powered",
+            "mobile_label": "Plant powered"
+          }
+        },
+        "promise-2": {
+          "type": "promise",
+          "settings": {
+            "icon": "shield",
+            "desktop_line_1": "Safe for",
+            "desktop_line_2": "kids & pets",
+            "mobile_label": "Kids & pet safe"
+          }
+        },
+        "promise-3": {
+          "type": "promise",
+          "settings": {
+            "icon": "circle",
+            "desktop_line_1": "Zero harsh",
+            "desktop_line_2": "chemicals",
+            "mobile_label": "Zero harsh chem"
+          }
+        },
+        "slide-1": {
+          "type": "slide",
+          "settings": {
+            "layout": "single",
+            "alt_1": "Purelane foaming kitchen cleaner spray bottle",
+            "label": "Single bottle",
+            "current_price": "₹200",
+            "compare_price": "₹299",
+            "saving": "33% off",
+            "control_label": "Show 1 product"
+          }
+        },
+        "slide-2": {
+          "type": "slide",
+          "settings": {
+            "layout": "double",
+            "alt_1": "Purelane tap cleaner and limescale remover spray bottle",
+            "alt_2": "Purelane foaming kitchen cleaner spray bottle",
+            "label": "Any 2 products",
+            "current_price": "₹349",
+            "compare_price": "₹598",
+            "saving": "Save ₹249",
+            "control_label": "Show 2 products"
+          }
+        },
+        "slide-3": {
+          "type": "slide",
+          "settings": {
+            "layout": "triple",
+            "alt_1": "Purelane tap cleaner and limescale remover spray bottle",
+            "alt_2": "Purelane copper, bronze and brass cleaner pump bottle",
+            "alt_3": "Purelane foaming kitchen cleaner spray bottle",
+            "label": "Any 3 products",
+            "current_price": "₹499",
+            "compare_price": "₹897",
+            "saving": "Save ₹398",
+            "control_label": "Show 3 products"
+          }
+        }
+      },
+      "block_order": [
+        "promise-1",
+        "promise-2",
+        "promise-3",
+        "slide-1",
+        "slide-2",
+        "slide-3"
+      ]
+    }
+  },
+  "order": [
+    "hero"
+  ]
+}
