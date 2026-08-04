@@ -1,0 +1,90 @@
+{%- comment -%}
+Inference: the prototype never shows sold-out or no-image cards, so this reusable card uses a disabled sold-out button and a neutral placeholder to avoid layout breaks in real stores.
+{%- endcomment -%}
+
+{%- liquid
+	assign card_product = product
+	assign card_badge = badge | default: 'Best seller'
+	assign card_rating = rating | default: ''
+	assign card_reviews = reviews | default: ''
+	assign card_button_label = button_label | default: 'Add to cart'
+	assign card_sold_out_label = sold_out_label | default: 'Sold out'
+	assign card_placeholder_label = placeholder_label | default: 'Product image unavailable'
+	assign card_sizes = sizes | default: '100vw'
+	assign card_loading = loading | default: 'lazy'
+	assign card_index = index | default: 0
+	assign card_variant = card_product.selected_or_first_available_variant
+	assign card_price = card_variant.price | default: 0
+	assign card_compare_price = card_variant.compare_at_price | default: card_product.compare_at_price_max
+	assign card_has_compare = false
+	if card_compare_price > card_price and card_compare_price != blank
+		assign card_has_compare = true
+	endif
+-%}
+
+<article class="glass card shop-grid-card shop-grid-card--{{ card_index | plus: 0 }}{% unless card_product.available %} is-sold-out{% endunless %}">
+	<div class="shop-grid-card__shot">
+		<span class="pill">{% if card_product.available %}{{ card_badge | escape }}{% else %}{{ card_sold_out_label | escape }}{% endif %}</span>
+
+		{%- if card_product.featured_image != blank -%}
+			{{ card_product.featured_image
+				| image_url: width: 900
+				| image_tag:
+					widths: '180, 240, 360, 480, 540, 720, 900',
+					sizes: card_sizes,
+					loading: card_loading,
+					class: 'shop-grid-card__image',
+					alt: card_product.featured_image.alt | default: card_product.title | escape
+			}}
+		{%- else -%}
+			<span class="shop-grid-card__placeholder" role="img" aria-label="{{ card_placeholder_label | escape }}">
+				<svg viewBox="0 0 130 200" aria-hidden="true" focusable="false">
+					<defs>
+						<linearGradient id="shop-grid-placeholder-{{ card_index }}-bg" x1="0" y1="0" x2="1" y2="1">
+							<stop offset="0" stop-color="#6b55b8" stop-opacity=".88" />
+							<stop offset="1" stop-color="#013f3d" stop-opacity=".72" />
+						</linearGradient>
+					</defs>
+					<rect x="17" y="22" width="96" height="156" rx="18" fill="url(#shop-grid-placeholder-{{ card_index }}-bg)" />
+					<rect x="29" y="64" width="72" height="72" rx="10" fill="rgba(250,247,253,.9)" />
+					<path d="M65 50c8-1 14 2 18 7 2 3 1 6-1 7l-14 2Z" fill="#cfdcd2" />
+					<text x="65" y="101" text-anchor="middle" font-family="Outfit, sans-serif" font-size="7.8" font-weight="800" letter-spacing=".8" fill="#faf7fd">PURELANE</text>
+					<line x1="40" y1="108" x2="90" y2="108" stroke="#f0a03c" stroke-width=".9" opacity=".9" />
+					<text x="65" y="120" text-anchor="middle" font-family="Inter, sans-serif" font-size="6.2" font-weight="700" letter-spacing="1" fill="#ece6f7">PRODUCT</text>
+					<text x="65" y="131" text-anchor="middle" font-family="Inter, sans-serif" font-size="6.2" font-weight="700" letter-spacing="1" fill="#ece6f7">IMAGE</text>
+					<text x="65" y="144" text-anchor="middle" font-family="Inter, sans-serif" font-size="4.8" font-weight="600" letter-spacing=".9" fill="rgba(236,230,247,.72)">ADD MEDIA</text>
+					<ellipse cx="65" cy="186" rx="38" ry="6" fill="#01201c" opacity=".38" />
+				</svg>
+			</span>
+		{%- endif -%}
+	</div>
+
+	<h4 class="shop-grid-card__title">{{ card_product.title | escape }}</h4>
+
+	{%- if card_rating != blank or card_reviews != blank -%}
+		<div class="shop-grid-card__rate">
+			<b>★ {{ card_rating | escape }}</b>
+			<span>· {{ card_reviews | escape }}</span>
+		</div>
+	{%- endif -%}
+
+	<div class="shop-grid-card__pr">
+		<strong>{{ card_price | money }}</strong>
+		{%- if card_has_compare -%}
+			<s>{{ card_compare_price | money }}</s>
+			{%- assign savings_ratio = card_compare_price | minus: card_price | times: 100.0 | divided_by: card_compare_price | round -%}
+			<em>{{ savings_ratio }}% off</em>
+		{%- endif -%}
+	</div>
+
+	{%- form 'product', card_product, class: 'shop-grid-card__form' -%}
+		<input type="hidden" name="id" value="{{ card_variant.id }}">
+		<button type="submit" class="btn btn-ghost btn-sm shop-grid-card__button"{% unless card_product.available %} disabled aria-disabled="true"{% endunless %}>
+			{%- if card_product.available -%}
+				{{ card_button_label | escape }}
+			{%- else -%}
+				{{ card_sold_out_label | escape }}
+			{%- endif -%}
+		</button>
+	{%- endform -%}
+</article>

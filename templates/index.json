@@ -92,8 +92,27 @@
         "slide-3"
       ]
     }
+    ,
+    "shop-grid": {
+      "type": "shop-grid",
+      "settings": {
+        "kicker": "Bestsellers",
+        "heading": "Loved by 30,000 homes",
+        "subheading": "",
+        "product_source": "manual",
+        "product_limit": 8,
+        "columns_mobile": 2,
+        "columns_tablet": 2,
+        "columns_desktop": 4,
+        "button_label": "Add to cart",
+        "empty_state": "<p>The grid is ready, but no products have been selected yet. Add products or choose a collection to match the prototype.</p>"
+      },
+      "blocks": {},
+      "block_order": []
+    }
   },
   "order": [
-    "hero"
+    "hero",
+    "shop-grid"
   ]
 }

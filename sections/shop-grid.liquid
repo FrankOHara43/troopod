@@ -1,0 +1,529 @@
+{%- comment -%}
+Prototype note: the shop grid is a curated, fixed card wall in the prototype, so this section defaults to manual product blocks for per-card badges and repeated product selections, with optional collection fallback. The no-image state is inferred because the prototype never shows it.
+{%- endcomment -%}
+
+{%- liquid
+	assign product_source = section.settings.product_source | default: 'manual'
+	assign selected_collection = section.settings.collection
+	assign product_limit = section.settings.product_limit | default: 8
+	assign columns_mobile = section.settings.columns_mobile | default: 2
+	assign columns_tablet = section.settings.columns_tablet | default: 2
+	assign columns_desktop = section.settings.columns_desktop | default: 4
+	assign button_label = section.settings.button_label | default: 'Add to cart'
+	assign section_heading = section.settings.heading | default: 'Bestsellers'
+	assign section_subheading = section.settings.subheading
+	assign rendered_products = 0
+
+	capture card_sizes
+		echo '(min-width: 860px) calc((100vw - 54px) / '
+		echo columns_desktop
+		echo '), (min-width: 760px) calc((100vw - 54px) / '
+		echo columns_tablet
+		echo '), calc((100vw - 36px) / '
+		echo columns_mobile
+		echo ')'
+	endcapture
+%}
+
+<section class="shop-grid section" id="shop-{{ section.id }}">
+	<style>
+		/* Prototype-specific layout variables: Dawn does not expose these exact grid breakpoints or card geometry as CSS variables. */
+		#shopify-section-{{ section.id }} {
+			--shop-grid-mobile-columns: {{ columns_mobile }};
+			--shop-grid-tablet-columns: {{ columns_tablet }};
+			--shop-grid-desktop-columns: {{ columns_desktop }};
+			--shop-grid-gap: 14px;
+			--shop-grid-card-padding: 16px;
+			--shop-grid-shot-height: 150px;
+			--shop-grid-shot-height-mobile: 126px;
+			--shop-grid-shot-image-height: 122px;
+			--shop-grid-shot-image-height-mobile: 108px;
+			--shop-grid-title-size: 13.5px;
+			--shop-grid-rate-size: 11.5px;
+			--shop-grid-price-size: 18px;
+			--shop-grid-pill-size: 8.5px;
+			--shop-grid-pill-offset: 9px;
+			--shop-grid-ease: cubic-bezier(.2, .7, .2, 1);
+			--shop-grid-empty-bg: linear-gradient(160deg, rgba(236, 230, 247, .12), rgba(75, 58, 143, .2));
+			--shop-grid-shot-bg: linear-gradient(160deg, rgba(236, 230, 247, .12), rgba(75, 58, 143, .2));
+			--shop-grid-shot-border: 1px solid rgba(236, 230, 247, .14);
+			--shop-grid-placeholder-bg: linear-gradient(160deg, rgba(236, 230, 247, .16), rgba(75, 58, 143, .18));
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid {
+			position: relative;
+			z-index: 2;
+			padding: 34px 0;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid__wrap {
+			max-width: var(--page-width, 120rem);
+			margin: 0 auto;
+			padding: 0 18px;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid__head {
+			margin-bottom: 26px;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid__kicker {
+			display: block;
+			font-size: 11px;
+			font-weight: 700;
+			letter-spacing: .22em;
+			text-transform: uppercase;
+			color: rgba(236, 230, 247, .52);
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid__heading {
+			margin: 12px 0 0;
+			font-family: var(--font-heading-family, 'Outfit', system-ui, sans-serif);
+			font-size: clamp(30px, 4.6vw, 54px);
+			line-height: .94;
+			letter-spacing: -.018em;
+			text-transform: uppercase;
+			color: var(--color-foreground, #faf7fd);
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid__rule {
+			display: flex;
+			align-items: center;
+			gap: 13px;
+			max-width: 270px;
+			margin: 14px 0 0;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid__rule i {
+			height: 1px;
+			flex: 1;
+			background: linear-gradient(90deg, rgba(236, 230, 247, .44), transparent);
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid__rule svg {
+			width: 16px;
+			height: 16px;
+			color: #f0a03c;
+			flex: 0 0 auto;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid__subheading {
+			margin-top: 12px;
+			max-width: 52rem;
+			color: rgba(236, 230, 247, .74);
+			font-size: 15px;
+			line-height: 1.62;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid__shelf {
+			display: grid;
+			gap: var(--shop-grid-gap);
+			grid-template-columns: repeat(var(--shop-grid-mobile-columns), minmax(0, 1fr));
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card,
+		#shopify-section-{{ section.id }} .shop-grid__empty {
+			padding: var(--shop-grid-card-padding);
+			display: flex;
+			flex-direction: column;
+			transition: transform .4s var(--shop-grid-ease);
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card:hover {
+			transform: translateY(-5px);
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card__shot {
+			height: var(--shop-grid-shot-height);
+			border-radius: 14px;
+			margin-bottom: 14px;
+			display: grid;
+			place-items: center;
+			position: relative;
+			overflow: hidden;
+			background: var(--shop-grid-shot-bg);
+			border: var(--shop-grid-shot-border);
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card__shot img,
+		#shopify-section-{{ section.id }} .shop-grid-card__shot svg {
+			height: var(--shop-grid-shot-image-height);
+			width: auto;
+			object-fit: contain;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card__shot .pill {
+			position: absolute;
+			top: var(--shop-grid-pill-offset);
+			left: var(--shop-grid-pill-offset);
+			font-size: var(--shop-grid-pill-size);
+			font-weight: 800;
+			letter-spacing: .13em;
+			text-transform: uppercase;
+			padding: 4px 9px;
+			border-radius: 999px;
+			background: rgba(23, 16, 43, .6);
+			border: 1px solid rgba(240, 160, 60, .32);
+			color: #f0a03c;
+			z-index: 2;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card__placeholder {
+			display: grid;
+			place-items: center;
+			width: 100%;
+			height: 100%;
+			background: var(--shop-grid-placeholder-bg);
+			color: #f0a03c;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card__placeholder svg {
+			width: min(74%, 130px);
+			height: auto;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card__title {
+			margin: 0 0 7px;
+			font-family: var(--font-heading-family, 'Outfit', system-ui, sans-serif);
+			font-size: var(--shop-grid-title-size);
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: .03em;
+			line-height: 1.2;
+			color: var(--color-foreground, #faf7fd);
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 2;
+			overflow: hidden;
+			min-height: 2.4em;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card__rate {
+			font-size: var(--shop-grid-rate-size);
+			color: rgba(236, 230, 247, .74);
+			margin-bottom: 10px;
+			display: flex;
+			align-items: center;
+			gap: 5px;
+			min-height: 1.2em;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card__rate b {
+			color: #f0a03c;
+			font-weight: 700;
+			flex: 0 0 auto;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card__pr {
+			margin-top: auto;
+			display: flex;
+			align-items: baseline;
+			gap: 8px;
+			margin-bottom: 12px;
+			flex-wrap: wrap;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card__pr strong {
+			font-family: var(--font-heading-family, 'Outfit', system-ui, sans-serif);
+			font-size: var(--shop-grid-price-size);
+			color: var(--color-foreground, #faf7fd);
+			font-weight: 700;
+			line-height: 1;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card__pr s {
+			font-size: 12px;
+			color: rgba(236, 230, 247, .52);
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card__pr em {
+			font-style: normal;
+			font-size: 10px;
+			font-weight: 800;
+			letter-spacing: .08em;
+			color: #f0a03c;
+			text-transform: uppercase;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card__button {
+			width: 100%;
+			justify-content: center;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card.is-sold-out {
+			opacity: .96;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid-card.is-sold-out .shop-grid-card__shot .pill {
+			border-color: rgba(236, 230, 247, .18);
+			color: rgba(236, 230, 247, .92);
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid__empty {
+			align-items: flex-start;
+			justify-content: center;
+			min-height: 220px;
+			background: var(--shop-grid-empty-bg);
+			border-radius: 26px;
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid__empty h3 {
+			margin: 0 0 8px;
+			font-family: var(--font-heading-family, 'Outfit', system-ui, sans-serif);
+			font-size: 22px;
+			text-transform: uppercase;
+			letter-spacing: -.01em;
+			color: var(--color-foreground, #faf7fd);
+		}
+
+		#shopify-section-{{ section.id }} .shop-grid__empty p {
+			margin: 0;
+			color: rgba(236, 230, 247, .74);
+			max-width: 34rem;
+		}
+
+		@media (min-width: 760px) {
+			#shopify-section-{{ section.id }} .shop-grid__shelf {
+				grid-template-columns: repeat(var(--shop-grid-tablet-columns), minmax(0, 1fr));
+			}
+
+			#shopify-section-{{ section.id }} .shop-grid-card__shot {
+				height: var(--shop-grid-shot-height-mobile);
+			}
+
+			#shopify-section-{{ section.id }} .shop-grid-card__shot img,
+			#shopify-section-{{ section.id }} .shop-grid-card__shot svg {
+				height: var(--shop-grid-shot-image-height-mobile);
+			}
+		}
+
+		@media (min-width: 860px) {
+			#shopify-section-{{ section.id }} .shop-grid__shelf {
+				grid-template-columns: repeat(var(--shop-grid-desktop-columns), minmax(0, 1fr));
+			}
+
+			#shopify-section-{{ section.id }} .shop-grid-card__shot {
+				height: var(--shop-grid-shot-height);
+			}
+
+			#shopify-section-{{ section.id }} .shop-grid-card__shot img,
+			#shopify-section-{{ section.id }} .shop-grid-card__shot svg {
+				height: var(--shop-grid-shot-image-height);
+			}
+		}
+
+		@media (max-width: 760px) {
+			#shopify-section-{{ section.id }} .shop-grid {
+				padding: 22px 0;
+			}
+
+			#shopify-section-{{ section.id }} .shop-grid__empty {
+				min-height: 180px;
+			}
+
+			#shopify-section-{{ section.id }} .shop-grid__heading {
+				font-size: clamp(26px, 12vw, 36px);
+			}
+		}
+	</style>
+
+	<div class="shop-grid__wrap">
+		<div class="shop-grid__head">
+			<span class="shop-grid__kicker">{{ section.settings.kicker | default: 'Bestsellers' | escape }}</span>
+			<h2 class="shop-grid__heading">{{ section_heading | escape }}</h2>
+			<div class="shop-grid__rule" aria-hidden="true">
+				<i></i>
+				<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21c0-6.5 3.5-11 8-12.5C20 15 16.5 20 12 21Z"/><path d="M12 21C12 14.5 8.5 10 4 8.5 4 15 7.5 20 12 21Z"/></svg>
+				<i></i>
+			</div>
+			{%- if section_subheading != blank -%}
+				<div class="shop-grid__subheading rte">{{ section_subheading }}</div>
+			{%- endif -%}
+		</div>
+
+		<div class="shop-grid__shelf">
+			{%- if product_source == 'collection' and selected_collection != blank and selected_collection.products_count > 0 -%}
+				{%- for product in selected_collection.products limit: product_limit -%}
+					{%- assign rendered_products = rendered_products | plus: 1 -%}
+					{%- assign badge_text = product.metafields.custom.badge.value | default: 'Best seller' -%}
+					{%- assign rating_text = product.metafields.custom.rating.value | default: '4.8' -%}
+					{%- assign reviews_text = product.metafields.custom.reviews.value | default: '0 reviews' -%}
+					{%- capture card_sizes_value -%}{{ card_sizes | strip_newlines | strip }}{%- endcapture -%}
+					{%- render 'card-product',
+						product: product,
+						badge: badge_text,
+						rating: rating_text,
+						reviews: reviews_text,
+						button_label: button_label,
+						placeholder_label: product.title,
+						sizes: card_sizes_value,
+						loading: 'lazy',
+						index: forloop.index0,
+						sold_out_label: 'Sold out'
+					-%}
+				{%- endfor -%}
+			{%- else -%}
+				{%- for block in section.blocks -%}
+					{%- if block.type == 'product_card' and block.settings.product != blank and rendered_products < product_limit -%}
+						{%- assign rendered_products = rendered_products | plus: 1 -%}
+						{%- capture card_sizes_value -%}{{ card_sizes | strip_newlines | strip }}{%- endcapture -%}
+						{%- render 'card-product',
+							product: block.settings.product,
+							badge: block.settings.badge,
+							rating: block.settings.rating,
+							reviews: block.settings.reviews,
+							button_label: button_label,
+							placeholder_label: block.settings.product.title,
+							sizes: card_sizes_value,
+							loading: 'lazy',
+							index: forloop.index0,
+							sold_out_label: 'Sold out'
+						-%}
+					{%- endif -%}
+				{%- endfor -%}
+			{%- endif -%}
+
+			{%- if rendered_products == 0 -%}
+				<div class="glass shop-grid__empty">
+					<div>
+						<h3>Pick products in the editor</h3>
+						<p>{{ section.settings.empty_state | default: 'The grid is ready, but no products have been selected yet. Add products or choose a collection to match the prototype.' }}</p>
+					</div>
+				</div>
+			{%- endif -%}
+		</div>
+	</div>
+</section>
+
+{% schema %}
+{
+	"name": "Shop grid",
+	"tag": "section",
+	"class": "section",
+	"settings": [
+		{
+			"type": "text",
+			"id": "kicker",
+			"label": "Kicker",
+			"default": "Bestsellers"
+		},
+		{
+			"type": "text",
+			"id": "heading",
+			"label": "Heading",
+			"default": "Loved by 30,000 homes"
+		},
+		{
+			"type": "richtext",
+			"id": "subheading",
+			"label": "Subheading",
+			"default": "<p></p>"
+		},
+		{
+			"type": "select",
+			"id": "product_source",
+			"label": "Product source",
+			"default": "manual",
+			"options": [
+				{
+					"value": "manual",
+					"label": "Manual product list"
+				},
+				{
+					"value": "collection",
+					"label": "Collection"
+				}
+			]
+		},
+		{
+			"type": "collection",
+			"id": "collection",
+			"label": "Collection"
+		},
+		{
+			"type": "range",
+			"id": "product_limit",
+			"label": "Number of products",
+			"min": 0,
+			"max": 12,
+			"step": 1,
+			"default": 8
+		},
+		{
+			"type": "range",
+			"id": "columns_mobile",
+			"label": "Columns on mobile",
+			"min": 1,
+			"max": 2,
+			"step": 1,
+			"default": 2
+		},
+		{
+			"type": "range",
+			"id": "columns_tablet",
+			"label": "Columns on tablet",
+			"min": 2,
+			"max": 3,
+			"step": 1,
+			"default": 2
+		},
+		{
+			"type": "range",
+			"id": "columns_desktop",
+			"label": "Columns on desktop",
+			"min": 3,
+			"max": 4,
+			"step": 1,
+			"default": 4
+		},
+		{
+			"type": "text",
+			"id": "button_label",
+			"label": "Button label",
+			"default": "Add to cart"
+		},
+		{
+			"type": "richtext",
+			"id": "empty_state",
+			"label": "Empty state text",
+			"default": "<p>The grid is ready, but no products have been selected yet. Add products or choose a collection to match the prototype.</p>"
+		}
+	],
+	"blocks": [
+		{
+			"type": "product_card",
+			"name": "Product card",
+			"settings": [
+				{
+					"type": "product",
+					"id": "product",
+					"label": "Product"
+				},
+				{
+					"type": "text",
+					"id": "badge",
+					"label": "Badge",
+					"default": "Best seller"
+				},
+				{
+					"type": "text",
+					"id": "rating",
+					"label": "Rating",
+					"default": "4.8"
+				},
+				{
+					"type": "text",
+					"id": "reviews",
+					"label": "Review count",
+					"default": "237 reviews"
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "Shop grid",
+			"blocks": []
+		}
+	]
+}
+{% endschema %}
