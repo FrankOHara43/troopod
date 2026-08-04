@@ -390,7 +390,8 @@ Prototype note: the bundle cards are tuned to match the fixed three-tier merchan
 			color: var(--bundles-ink);
 		}
 
-		#shopify-section-{{ section.id }} .bundles__empty p {
+		#shopify-section-{{ section.id }} .bundles__empty p,
+		#shopify-section-{{ section.id }} .bundles__empty .rte p {
 			margin: 0;
 			color: var(--bundles-paper);
 		}
@@ -432,6 +433,8 @@ Prototype note: the bundle cards are tuned to match the fixed three-tier merchan
 				transition: none !important;
 			}
 		}
+		#shopify-section-{{ section.id }} a:focus-visible,
+		#shopify-section-{{ section.id }} button:focus-visible { outline: 2px solid var(--bundles-accent); outline-offset: 4px; }
 	</style>
 
 	<div class="bundles__wrap">
@@ -556,7 +559,7 @@ Prototype note: the bundle cards are tuned to match the fixed three-tier merchan
 			{%- if rendered_bundles == 0 -%}
 				<div class="glass bundles__empty">
 					<h3>Add bundle cards</h3>
-					<p>{{ empty_state | default: 'Add bundle blocks in the editor to render the prototype tiers.' }}</p>
+					<div class="rte">{{ empty_state | default: 'Add bundle blocks in the editor to render the prototype tiers.' }}</div>
 				</div>
 			{%- endif -%}
 		</div>

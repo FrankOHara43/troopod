@@ -8,7 +8,7 @@ Prototype note: the combos rail is horizontal on all widths, so this implementat
 	assign rendered_combos = 0
 -%}
 
-<section class="best-combos section" id="combos-{{ section.id }}">
+<section class="best-combos section" id="combos-{{ section.id }}" data-combo-section-id="{{ section.id }}">
 	<style>
 		/* Prototype-specific fallback art classes for the combo stack; Dawn has no exact equivalent for these rendered product silhouettes. */
 		#shopify-section-{{ section.id }} {
@@ -409,7 +409,8 @@ Prototype note: the combos rail is horizontal on all widths, so this implementat
 			color: var(--combos-ink);
 		}
 
-		#shopify-section-{{ section.id }} .best-combos__empty p {
+		#shopify-section-{{ section.id }} .best-combos__empty p,
+		#shopify-section-{{ section.id }} .best-combos__empty .rte p {
 			margin: 0;
 			color: var(--combos-paper);
 		}
@@ -494,6 +495,8 @@ Prototype note: the combos rail is horizontal on all widths, so this implementat
 				transition: none !important;
 			}
 		}
+		#shopify-section-{{ section.id }} a:focus-visible,
+		#shopify-section-{{ section.id }} button:focus-visible { outline: 2px solid var(--combos-accent); outline-offset: 4px; }
 	</style>
 
 	<div class="best-combos__wrap">
@@ -639,7 +642,7 @@ Prototype note: the combos rail is horizontal on all widths, so this implementat
 			{%- if rendered_combos == 0 -%}
 				<div class="glass best-combos__empty">
 					<h3>Add combo blocks</h3>
-					<p>{{ section.settings.empty_state | default: 'Add combo metaobjects or fallback combo blocks in the editor to render the rail.' }}</p>
+					<div class="rte">{{ section.settings.empty_state | default: 'Add combo metaobjects or fallback combo blocks in the editor to render the rail.' }}</div>
 				</div>
 			{%- endif -%}
 		</div>
@@ -653,12 +656,12 @@ Prototype note: the combos rail is horizontal on all widths, so this implementat
 
 	<script>
 		(() => {
-			const sectionRoot = document.querySelector('[data-combo-rail]')?.closest('.best-combos');
-			const rail = document.querySelector('[data-combo-rail]');
-			if (!sectionRoot || !rail || sectionRoot.dataset.comboInitialized === 'true') return;
-			sectionRoot.dataset.comboInitialized = 'true';
-
-			rail.addEventListener('keydown', (event) => {
+			const instances = window.PurelaneComboRails || (window.PurelaneComboRails = {});
+			const sectionId = '{{ section.id }}';
+			function init(sectionRoot) {
+				const rail = sectionRoot && sectionRoot.querySelector('[data-combo-rail]');
+				if (!sectionRoot || !rail || instances[sectionId]) return;
+				const onKeydown = (event) => {
 				const step = Math.max(rail.clientWidth * 0.82, 220);
 				if (event.key === 'ArrowRight' || event.key === 'PageDown') {
 					event.preventDefault();
@@ -671,8 +674,18 @@ Prototype note: the combos rail is horizontal on all widths, so this implementat
 					rail.scrollTo({ left: 0, behavior: 'smooth' });
 				} else if (event.key === 'End') {
 					event.preventDefault();
-					rail.scrollTo({ left: rail.scrollWidth, behavior: 'smooth' });
-				}
+						rail.scrollTo({ left: rail.scrollWidth, behavior: 'smooth' });
+					}
+				};
+				rail.addEventListener('keydown', onKeydown);
+				instances[sectionId] = () => { rail.removeEventListener('keydown', onKeydown); delete instances[sectionId]; };
+			}
+			init(document.querySelector('[data-combo-section-id="{{ section.id }}"]'));
+			document.addEventListener('shopify:section:load', (event) => {
+				if (event.detail.sectionId === sectionId) init(event.target.querySelector('[data-combo-section-id="{{ section.id }}"]'));
+			});
+			document.addEventListener('shopify:section:unload', (event) => {
+				if (event.detail.sectionId === sectionId && instances[sectionId]) instances[sectionId]();
 			});
 		})();
 	</script>

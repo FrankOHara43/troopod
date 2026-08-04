@@ -45,6 +45,8 @@
 		@keyframes reviews-scroll-{{ section.id }} { to { transform: translateX(calc(-50% - (var(--reviews-gap) / 2))); } }
 		@media (max-width: 749px) { #shopify-section-{{ section.id }} .reviews-rail { padding: 22px 0; } #shopify-section-{{ section.id }} .reviews-rail__head { gap: 8px 12px; } #shopify-section-{{ section.id }} .review-card { flex-basis: 268px; } }
 		@media (prefers-reduced-motion: reduce) { #shopify-section-{{ section.id }} .reviews-rail__viewport { overflow-x: auto; scrollbar-width: thin; } #shopify-section-{{ section.id }} .reviews-rail__track { animation: none; width: max-content; } }
+		#shopify-section-{{ section.id }} a:focus-visible,
+		#shopify-section-{{ section.id }} button:focus-visible { outline: 2px solid var(--reviews-accent); outline-offset: 4px; }
 	</style>
 
 	<div class="reviews-rail__wrap">

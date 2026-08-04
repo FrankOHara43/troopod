@@ -275,7 +275,8 @@ Prototype note: the shop grid is a curated, fixed card wall in the prototype, so
 			color: var(--color-foreground, #faf7fd);
 		}
 
-		#shopify-section-{{ section.id }} .shop-grid__empty p {
+		#shopify-section-{{ section.id }} .shop-grid__empty p,
+		#shopify-section-{{ section.id }} .shop-grid__empty .rte p {
 			margin: 0;
 			color: rgba(236, 230, 247, .74);
 			max-width: 34rem;
@@ -324,6 +325,8 @@ Prototype note: the shop grid is a curated, fixed card wall in the prototype, so
 				font-size: clamp(26px, 12vw, 36px);
 			}
 		}
+		#shopify-section-{{ section.id }} a:focus-visible,
+		#shopify-section-{{ section.id }} button:focus-visible { outline: 2px solid #f0a03c; outline-offset: 4px; }
 	</style>
 
 	<div class="shop-grid__wrap">
@@ -358,6 +361,7 @@ Prototype note: the shop grid is a curated, fixed card wall in the prototype, so
 						sizes: card_sizes_value,
 						loading: 'lazy',
 						index: forloop.index0,
+						section_id: section.id,
 						sold_out_label: 'Sold out'
 					-%}
 				{%- endfor -%}
@@ -376,6 +380,7 @@ Prototype note: the shop grid is a curated, fixed card wall in the prototype, so
 							sizes: card_sizes_value,
 							loading: 'lazy',
 							index: forloop.index0,
+							section_id: section.id,
 							sold_out_label: 'Sold out'
 						-%}
 					{%- endif -%}
@@ -386,7 +391,7 @@ Prototype note: the shop grid is a curated, fixed card wall in the prototype, so
 				<div class="glass shop-grid__empty">
 					<div>
 						<h3>Pick products in the editor</h3>
-						<p>{{ section.settings.empty_state | default: 'The grid is ready, but no products have been selected yet. Add products or choose a collection to match the prototype.' }}</p>
+					<div class="rte">{{ section.settings.empty_state | default: 'The grid is ready, but no products have been selected yet. Add products or choose a collection to match the prototype.' }}</div>
 					</div>
 				</div>
 			{%- endif -%}

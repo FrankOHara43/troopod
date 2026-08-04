@@ -584,6 +584,8 @@
 				transition: none !important;
 			}
 		}
+		#shopify-section-{{ section.id }} a:focus-visible,
+		#shopify-section-{{ section.id }} button:focus-visible { outline: 2px solid #f0a03c; outline-offset: 4px; }
 	</style>
 
 	<div class="purelane-hero__grid">
@@ -663,39 +665,39 @@
 						<div class="purelane-hero__slide purelane-hero__slide--{{ block.settings.layout }}{% if slide_index == 1 %} is-active{% endif %}" data-hero-slide="{{ slide_index | minus: 1 }}" {{ block.shopify_attributes }}>
 							{% if block.settings.layout == 'single' %}
 								{% if block.settings.image_1 != blank %}
-									{{ block.settings.image_1 | image_url: width: 1200 | image_tag: class: 'purelane-hero__art purelane-hero__art--a', alt: block.settings.alt_1 | escape, loading: 'eager' }}
+									{{ block.settings.image_1 | image_url: width: 1200 | image_tag: widths: '400, 600, 800, 1200', sizes: '(min-width: 990px) 50vw, 100vw', class: 'purelane-hero__art purelane-hero__art--a', alt: block.settings.alt_1 | default: 'Purelane product' | escape, loading: 'eager' }}
 								{% else %}
-									<span class="purelane-hero__art purelane-hero__art--a purelane-hero__art--fallback purelane-hero__art--kbtl" role="img" aria-label="{{ block.settings.alt_1 | escape }}"></span>
+									<span class="purelane-hero__art purelane-hero__art--a purelane-hero__art--fallback purelane-hero__art--kbtl" role="img" aria-label="{{ block.settings.alt_1 | default: 'Purelane product' | escape }}"></span>
 								{% endif %}
 							{% elsif block.settings.layout == 'double' %}
 								{% if block.settings.image_1 != blank %}
-									{{ block.settings.image_1 | image_url: width: 1200 | image_tag: class: 'purelane-hero__art purelane-hero__art--a', alt: block.settings.alt_1 | escape, loading: 'eager' }}
+									{{ block.settings.image_1 | image_url: width: 1200 | image_tag: widths: '400, 600, 800, 1200', sizes: '(min-width: 990px) 50vw, 100vw', class: 'purelane-hero__art purelane-hero__art--a', alt: block.settings.alt_1 | default: 'Purelane product' | escape, loading: 'eager' }}
 								{% else %}
-									<span class="purelane-hero__art purelane-hero__art--a purelane-hero__art--fallback purelane-hero__art--tap" role="img" aria-label="{{ block.settings.alt_1 | escape }}"></span>
+									<span class="purelane-hero__art purelane-hero__art--a purelane-hero__art--fallback purelane-hero__art--tap" role="img" aria-label="{{ block.settings.alt_1 | default: 'Purelane product' | escape }}"></span>
 								{% endif %}
 
 								{% if block.settings.image_2 != blank %}
-									{{ block.settings.image_2 | image_url: width: 1200 | image_tag: class: 'purelane-hero__art purelane-hero__art--b', alt: block.settings.alt_2 | escape, loading: 'eager' }}
+									{{ block.settings.image_2 | image_url: width: 1200 | image_tag: widths: '400, 600, 800, 1200', sizes: '(min-width: 990px) 50vw, 100vw', class: 'purelane-hero__art purelane-hero__art--b', alt: block.settings.alt_2 | default: 'Purelane product' | escape, loading: 'eager' }}
 								{% else %}
-									<span class="purelane-hero__art purelane-hero__art--b purelane-hero__art--fallback purelane-hero__art--kbtl" role="img" aria-label="{{ block.settings.alt_2 | escape }}"></span>
+									<span class="purelane-hero__art purelane-hero__art--b purelane-hero__art--fallback purelane-hero__art--kbtl" role="img" aria-label="{{ block.settings.alt_2 | default: 'Purelane product' | escape }}"></span>
 								{% endif %}
 							{% else %}
 								{% if block.settings.image_1 != blank %}
-									{{ block.settings.image_1 | image_url: width: 1200 | image_tag: class: 'purelane-hero__art purelane-hero__art--a', alt: block.settings.alt_1 | escape, loading: 'eager' }}
+									{{ block.settings.image_1 | image_url: width: 1200 | image_tag: widths: '400, 600, 800, 1200', sizes: '(min-width: 990px) 50vw, 100vw', class: 'purelane-hero__art purelane-hero__art--a', alt: block.settings.alt_1 | default: 'Purelane product' | escape, loading: 'eager' }}
 								{% else %}
-									<span class="purelane-hero__art purelane-hero__art--a purelane-hero__art--fallback purelane-hero__art--tap" role="img" aria-label="{{ block.settings.alt_1 | escape }}"></span>
+									<span class="purelane-hero__art purelane-hero__art--a purelane-hero__art--fallback purelane-hero__art--tap" role="img" aria-label="{{ block.settings.alt_1 | default: 'Purelane product' | escape }}"></span>
 								{% endif %}
 
 								{% if block.settings.image_3 != blank %}
-									{{ block.settings.image_3 | image_url: width: 1200 | image_tag: class: 'purelane-hero__art purelane-hero__art--c', alt: block.settings.alt_3 | escape, loading: 'eager' }}
+									{{ block.settings.image_3 | image_url: width: 1200 | image_tag: widths: '400, 600, 800, 1200', sizes: '(min-width: 990px) 50vw, 100vw', class: 'purelane-hero__art purelane-hero__art--c', alt: block.settings.alt_3 | default: 'Purelane product' | escape, loading: 'eager' }}
 								{% else %}
-									<span class="purelane-hero__art purelane-hero__art--c purelane-hero__art--fallback purelane-hero__art--kbtl" role="img" aria-label="{{ block.settings.alt_3 | escape }}"></span>
+									<span class="purelane-hero__art purelane-hero__art--c purelane-hero__art--fallback purelane-hero__art--kbtl" role="img" aria-label="{{ block.settings.alt_3 | default: 'Purelane product' | escape }}"></span>
 								{% endif %}
 
 								{% if block.settings.image_2 != blank %}
-									{{ block.settings.image_2 | image_url: width: 1200 | image_tag: class: 'purelane-hero__art purelane-hero__art--b', alt: block.settings.alt_2 | escape, loading: 'eager' }}
+									{{ block.settings.image_2 | image_url: width: 1200 | image_tag: widths: '400, 600, 800, 1200', sizes: '(min-width: 990px) 50vw, 100vw', class: 'purelane-hero__art purelane-hero__art--b', alt: block.settings.alt_2 | default: 'Purelane product' | escape, loading: 'eager' }}
 								{% else %}
-									<span class="purelane-hero__art purelane-hero__art--b purelane-hero__art--fallback purelane-hero__art--metal" role="img" aria-label="{{ block.settings.alt_2 | escape }}"></span>
+									<span class="purelane-hero__art purelane-hero__art--b purelane-hero__art--fallback purelane-hero__art--metal" role="img" aria-label="{{ block.settings.alt_2 | default: 'Purelane product' | escape }}"></span>
 								{% endif %}
 							{% endif %}
 
@@ -732,99 +734,57 @@
 
 	<script>
 		(() => {
-			const sectionRoot = document.querySelector('[data-purelane-hero-id="{{ section.id }}"]');
-			if (!sectionRoot || sectionRoot.dataset.heroInitialized === 'true') return;
-
-			sectionRoot.dataset.heroInitialized = 'true';
-			const reduceQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
-			const prefersReducedMotion = !!(reduceQuery && reduceQuery.matches);
-			const stage = sectionRoot.querySelector('[data-hero-stage]');
-			const slides = Array.from(sectionRoot.querySelectorAll('[data-hero-slide]'));
-			const dots = Array.from(sectionRoot.querySelectorAll('[data-hero-dot]'));
-			let activeIndex = 0;
-			let timer = null;
-
-			function setActive(index) {
-				if (!slides.length) return;
-				activeIndex = (index + slides.length) % slides.length;
-				slides.forEach((slide, slideIndex) => {
-					slide.classList.toggle('is-active', slideIndex === activeIndex);
-				});
-				dots.forEach((dot, dotIndex) => {
-					const isActive = dotIndex === activeIndex;
-					dot.classList.toggle('is-active', isActive);
-					if (isActive) {
-						dot.setAttribute('aria-current', 'true');
-					} else {
-						dot.removeAttribute('aria-current');
-					}
-				});
-			}
-
-			function stop() {
-				if (timer) {
-					window.clearInterval(timer);
-					timer = null;
-				}
-			}
-
-			function play() {
-				if (prefersReducedMotion || timer || slides.length < 2) return;
-				timer = window.setInterval(() => {
-					setActive(activeIndex + 1);
-				}, 3800);
-			}
-
-			dots.forEach((dot, index) => {
-				dot.addEventListener('click', () => {
-					stop();
-					setActive(index);
-					play();
-				});
-			});
-
-			if (stage) {
-				stage.addEventListener('mouseenter', stop);
-				stage.addEventListener('mouseleave', play);
-			}
-
-			if ('IntersectionObserver' in window) {
-				const visibleObserver = new IntersectionObserver((entries) => {
-					entries.forEach((entry) => {
-						if (entry.isIntersecting) {
-							sectionRoot.classList.add('is-visible');
-							setActive(activeIndex);
-							play();
-						} else {
-							stop();
-						}
+			const instances = window.PurelaneHeroes || (window.PurelaneHeroes = {});
+			const sectionId = '{{ section.id }}';
+			function init(sectionRoot) {
+				if (!sectionRoot || instances[sectionId]) return;
+				const reduceQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+				const stage = sectionRoot.querySelector('[data-hero-stage]');
+				const slides = Array.from(sectionRoot.querySelectorAll('[data-hero-slide]'));
+				const dots = Array.from(sectionRoot.querySelectorAll('[data-hero-dot]'));
+				let activeIndex = 0;
+				let timer = null;
+				let observer = null;
+				const setActive = (index) => {
+					if (!slides.length) return;
+					activeIndex = (index + slides.length) % slides.length;
+					slides.forEach((slide, slideIndex) => slide.classList.toggle('is-active', slideIndex === activeIndex));
+					dots.forEach((dot, dotIndex) => {
+						const isActive = dotIndex === activeIndex;
+						dot.classList.toggle('is-active', isActive);
+						dot.toggleAttribute('aria-current', isActive);
 					});
-				}, { threshold: 0.2 });
-
-				visibleObserver.observe(sectionRoot);
-			} else {
+				};
+				const stop = () => { if (timer) { window.clearInterval(timer); timer = null; } };
+				const play = () => {
+					if ((reduceQuery && reduceQuery.matches) || timer || slides.length < 2) return;
+					timer = window.setInterval(() => setActive(activeIndex + 1), 3800);
+				};
+				const onDotClick = (index) => () => { stop(); setActive(index); play(); };
+				const dotListeners = dots.map((dot, index) => ({ dot, listener: onDotClick(index) }));
+				dotListeners.forEach(({ dot, listener }) => dot.addEventListener('click', listener));
+				if (stage) { stage.addEventListener('mouseenter', stop); stage.addEventListener('mouseleave', play); }
+				const onMotionChange = (event) => { if (event.matches) stop(); else play(); };
+				if (reduceQuery && typeof reduceQuery.addEventListener === 'function') reduceQuery.addEventListener('change', onMotionChange);
+				if ('IntersectionObserver' in window) {
+					observer = new IntersectionObserver((entries) => entries.forEach((entry) => { if (entry.isIntersecting) play(); else stop(); }), { threshold: 0.2 });
+					observer.observe(sectionRoot);
+				}
+				setActive(0);
 				sectionRoot.classList.add('is-visible');
 				play();
+				instances[sectionId] = () => {
+					stop();
+					if (observer) observer.disconnect();
+					dotListeners.forEach(({ dot, listener }) => dot.removeEventListener('click', listener));
+					if (stage) { stage.removeEventListener('mouseenter', stop); stage.removeEventListener('mouseleave', play); }
+					if (reduceQuery && typeof reduceQuery.removeEventListener === 'function') reduceQuery.removeEventListener('change', onMotionChange);
+					delete instances[sectionId];
+				};
 			}
-
-			if (prefersReducedMotion) {
-				stop();
-				sectionRoot.classList.add('is-visible');
-			}
-
-			if (reduceQuery && typeof reduceQuery.addEventListener === 'function') {
-				reduceQuery.addEventListener('change', (event) => {
-					if (event.matches) {
-						stop();
-						sectionRoot.classList.add('is-visible');
-					} else {
-						play();
-					}
-				});
-			}
-
-			setActive(0);
-			sectionRoot.classList.add('is-visible');
+			init(document.querySelector('[data-purelane-hero-id="{{ section.id }}"]'));
+			document.addEventListener('shopify:section:load', (event) => { if (event.detail.sectionId === sectionId) init(event.target.querySelector('[data-purelane-hero-id="{{ section.id }}"]')); });
+			document.addEventListener('shopify:section:unload', (event) => { if (event.detail.sectionId === sectionId && instances[sectionId]) instances[sectionId](); });
 		})();
 	</script>
 </section>

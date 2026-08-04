@@ -14,6 +14,7 @@ Inference: the prototype never shows sold-out or no-image cards, so this reusabl
 	assign card_sizes = sizes | default: '100vw'
 	assign card_loading = loading | default: 'lazy'
 	assign card_index = index | default: 0
+	assign card_section_id = section_id | default: section.id | default: 'card'
 	assign card_variant = card_product.selected_or_first_available_variant
 	assign card_price = card_variant.price | default: 0
 	assign card_compare_price = card_variant.compare_at_price | default: card_product.compare_at_price_max
@@ -68,12 +69,12 @@ Inference: the prototype never shows sold-out or no-image cards, so this reusabl
 			<span class="shop-grid-card__placeholder" role="img" aria-label="{{ card_placeholder_label | escape }}">
 				<svg viewBox="0 0 130 200" aria-hidden="true" focusable="false">
 					<defs>
-						<linearGradient id="shop-grid-placeholder-{{ card_index }}-bg" x1="0" y1="0" x2="1" y2="1">
+						<linearGradient id="shop-grid-placeholder-{{ card_section_id }}-{{ card_index }}-bg" x1="0" y1="0" x2="1" y2="1">
 							<stop offset="0" stop-color="#6b55b8" stop-opacity=".88" />
 							<stop offset="1" stop-color="#013f3d" stop-opacity=".72" />
 						</linearGradient>
 					</defs>
-					<rect x="17" y="22" width="96" height="156" rx="18" fill="url(#shop-grid-placeholder-{{ card_index }}-bg)" />
+					<rect x="17" y="22" width="96" height="156" rx="18" fill="url(#shop-grid-placeholder-{{ card_section_id }}-{{ card_index }}-bg)" />
 					<rect x="29" y="64" width="72" height="72" rx="10" fill="rgba(250,247,253,.9)" />
 					<path d="M65 50c8-1 14 2 18 7 2 3 1 6-1 7l-14 2Z" fill="#cfdcd2" />
 					<text x="65" y="101" text-anchor="middle" font-family="Outfit, sans-serif" font-size="7.8" font-weight="800" letter-spacing=".8" fill="#faf7fd">PURELANE</text>
